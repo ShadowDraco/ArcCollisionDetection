@@ -20,8 +20,9 @@ public class GraphicsHandler extends JPanel {
 	}
 
 	public void drawPlayer(Graphics2D g2, AffineTransform old) {
-		g2.setColor(Color.GREEN);
-		g2.fill(level.player.rect);
+		g2.setColor(Color.lightGray);
+		//g2.draw(level.player.rect);
+		g2.draw(level.player.ellipse);
 
 		g2.setTransform(old);
 	}
