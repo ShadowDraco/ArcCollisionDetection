@@ -2,18 +2,21 @@ package firstRayTracingTest;
 
 import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.Ellipse2D;
 
 public class Player  {
 	
-	double x, y, velX, velY;
+	double x, y, w, h, velX, velY, cx, cy;
 	double speed = 1.4;
 	boolean movingLeft, movingRight, movingUp, movingDown;
 	Rectangle2D rect;
+	Ellipse2D ellipse;
 	
 	public Player(double x, double y) {
 		this.x = x;
 		this.y = y;
 		rect = new Rectangle2D.Double(x, y, 20, 20);
+		ellipse = new Ellipse2D.Double();
 	}
 	
 	public void setMovement(KeyEvent e) {
@@ -67,6 +70,7 @@ public class Player  {
 	public void update() {
 		move();
 		rect.setRect(x, y, 20, 20);
+		ellipse.setFrame(rect);
 	}
 
 }

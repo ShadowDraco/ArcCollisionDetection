@@ -1,6 +1,6 @@
 package firstRayTracingTest;
 
-import java.awt.geom.Area;
+import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 
 public class CollisionHandler {
@@ -13,64 +13,45 @@ public class CollisionHandler {
 	}
 
 	public void checkNinjas(Level level) {
+		
 		for (int i = 0; i < level.ninjas.size(); i++) {
 			Ninja ninja = level.ninjas.get(i);
+			ninja.seesPlayer = false;
 			playerRect = level.player.rect;
 
 			// Check collision
-			if (playerRect.getBounds2D().intersects(ninja.visionArc.getBounds2D())) {
-				// Create an area of the object for greater precision
-				Area area = new Area(playerRect);
-				area.intersect(new Area(ninja.visionArc));
-				// After checking if the area intersects a second time make the NPC "See" the player
-				if (!area.isEmpty()) {
+			for (Line2D ray : ninja.rays) {
+				if (playerRect.getBounds2D().intersectsLine(ray)) {
 					ninja.seesPlayer = true;
-				}
-				else {
-					ninja.seesPlayer = false;
 				}
 			}
 		}
 	}
-	
+
 	public void checkSnipers(Level level) {
 		for (int i = 0; i < level.snipers.size(); i++) {
 			Sniper sniper = level.snipers.get(i);
+			sniper.seesPlayer = false;
 			playerRect = level.player.rect;
 
 			// Check collision
-			if (playerRect.getBounds2D().intersects(sniper.visionArc.getBounds2D())) {
-				
-				Area area = new Area(playerRect);
-				area.intersect(new Area(sniper.visionArc));
-				
-				if (!area.isEmpty()) {
+			for (Line2D ray : sniper.rays) {
+				if (playerRect.getBounds2D().intersectsLine(ray)) {
 					sniper.seesPlayer = true;
-				
 				}
-				else {
-					sniper.seesPlayer = false;
-				}
-			} 
+			}
 		}
 	}
 
 	public void checkShotgunners(Level level) {
-		for (int i = 0; i < level.snipers.size(); i++) {
-			Sniper sniper = level.snipers.get(i);
+		for (int i = 0; i < level.shotgunners.size(); i++) {
+			Shotgunner shotgunner = level.shotgunners.get(i);
 			playerRect = level.player.rect;
-
+			shotgunner.seesPlayer = false;
 			// Check collision
-			if (playerRect.getBounds2D().intersects(sniper.visionArc.getBounds2D())) {
-				
-				Area area = new Area(playerRect);
-				area.intersect(new Area(sniper.visionArc));
-				
-				if (!area.isEmpty()) {
-					sniper.seesPlayer = true;
-				}
-				else {
-					sniper.seesPlayer = false;
+			for (Line2D ray : shotgunner.rays) {
+				if (playerRect.getBounds2D().intersectsLine(ray)) {
+					shotgunner.seesPlayer = true;
 				}
 			}
 		}

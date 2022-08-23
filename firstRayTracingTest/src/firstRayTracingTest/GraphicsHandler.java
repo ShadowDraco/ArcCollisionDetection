@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Line2D;
 
 import javax.swing.JPanel;
 
@@ -19,24 +20,21 @@ public class GraphicsHandler extends JPanel {
 	}
 
 	public void drawPlayer(Graphics2D g2, AffineTransform old) {
-		g2.setColor(Color.GREEN);
-		g2.fill(level.player.rect);
+		g2.setColor(Color.lightGray);
+		//g2.draw(level.player.rect);
+		g2.draw(level.player.ellipse);
 
 		g2.setTransform(old);
 	}
 
 	public void drawNPC(NPC npc, Graphics2D g2, AffineTransform old) {
-
-		// translate to the position of the npc and rotate
-		AffineTransform npcTransform = AffineTransform.getRotateInstance(Math.toRadians(npc.angle), npc.x, npc.y);
-		// Translate back a few units to keep the npc rotating about its own center
-		// point
-		npcTransform.translate(-npc.halfWidth, -npc.halfHeight);
-		g2.setTransform(npcTransform);
 		
-		// g2.draw(npc.rect); //<-- show bounding box if you want
+		g2.draw(npc.rect); //<-- show bounding box if you want
+
 		g2.setColor(npc.outlineColor);
-		g2.draw(npc.visionArc);
+		for (Line2D ray : npc.rays) {
+			g2.draw(ray);
+		}
 		
 		g2.setColor(Color.BLACK);
 		g2.draw(npc.ellipse);

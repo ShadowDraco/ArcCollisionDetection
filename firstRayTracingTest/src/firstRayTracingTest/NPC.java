@@ -1,21 +1,21 @@
 package firstRayTracingTest;
 
 import java.awt.Color;
-import java.awt.geom.Arc2D;
-import java.awt.geom.Ellipse2D;
 
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 
 public class NPC {
 
-	double startAngle, angle, rotateSpeed;
+	double startAngle, angle, rotateSpeed, angleX, angleY;
 	int rotateDirection = 1;
 
 	double x, y, cx, cy, w, h;
 	double halfWidth, halfHeight;
 	Ellipse2D ellipse;
 	Rectangle2D rect;
-	Arc2D visionArc;
+	Line2D[] rays;
 	
 	boolean seesPlayer = false;
 	Color outlineColor;
@@ -36,9 +36,8 @@ public class NPC {
 
 		rect = new Rectangle2D.Double(x, y, w, h);
 		ellipse = new Ellipse2D.Double();
-		visionArc = new Arc2D.Double();
 
-		visionAngle = visionDistance / 60 + visionMultiplier * 10;
+		visionAngle = (visionDistance / 60 + visionMultiplier * 10);
 
 	}
 
@@ -54,11 +53,14 @@ public class NPC {
 
 		rect = new Rectangle2D.Double(x, y, w, h);
 		ellipse = new Ellipse2D.Double();
-		visionArc = new Arc2D.Double();
 
 		this.visionDistance = visionDistance;
 		this.visionMultiplier = visionMultiplier;
 		visionAngle = visionDistance / 60 + visionMultiplier * 10;
+		rays = new Line2D[(int) (visionAngle * 2)];
+		for (int i = 0; i < rays.length; i++) {
+			rays[i] = new Line2D.Double();
+		}
 	}
 
 	public void rotate() {
@@ -74,9 +76,18 @@ public class NPC {
 			angle -= rotateSpeed;
 		}
 	}
+	
+	public void setRays() {
+		for (int i = 0; i < rays.length; i++) {
+			double rayStartAngleX = Math.sin(Math.toRadians((startAngle - angle) + i));
+			double rayStartAngleY = Math.cos(Math.toRadians((startAngle - angle) + i));
+			rays[i].setLine(cx, cy, cx + visionDistance * rayStartAngleX, cy + visionDistance * rayStartAngleY);
+		}
+	}
 
-	public void setPosition() {
-
+	public void setPosition() {	
+		angleX = Math.sin(Math.toRadians(angle));
+		angleY = Math.cos(Math.toRadians(angle));
 		rotate();
 
 		// Set values used in collisions, math, and drawing
@@ -90,7 +101,7 @@ public class NPC {
 		// Update the shapes used in the npc
 		rect.setRect(x, y, w, h);
 		ellipse.setFrame(rect);
-		visionArc.setArcByCenter(cx, cy, visionDistance, visionAngle, visionAngle * 2, Arc2D.PIE);
+		setRays();
 	}
 
 	public void update() {
@@ -101,6 +112,7 @@ public class NPC {
 		} else {
 			outlineColor = Color.DARK_GRAY;
 		}
+		
 	}
 
 }
