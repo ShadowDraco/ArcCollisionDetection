@@ -28,13 +28,13 @@ public class Level {
 	
 	public void updateNpcList() {
 		for (int i = 0; i < ninjas.size(); i++) {
-			ninjas.get(i).update();
+			ninjas.get(i).update(player);
 		}
 		for (int i = 0; i < snipers.size(); i++) {
-			snipers.get(i).update();
+			snipers.get(i).update(player);
 		}
 		for (int i = 0; i < shotgunners.size(); i++) {
-			shotgunners.get(i).update();
+			shotgunners.get(i).update(player);
 		}
 	}
 	

@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
+import java.awt.AlphaComposite;
 import java.awt.geom.Line2D;
 
 import javax.swing.JPanel;
@@ -29,12 +30,18 @@ public class GraphicsHandler extends JPanel {
 
 	public void drawNPC(NPC npc, Graphics2D g2, AffineTransform old) {
 		
+		AlphaComposite oldAlpha= AlphaComposite.getInstance(AlphaComposite.SRC_OVER);
+		AlphaComposite rayAlpha = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f);
+
 		g2.draw(npc.rect); //<-- show bounding box if you want
 
 		g2.setColor(npc.outlineColor);
+		g2.setComposite(rayAlpha);
 		for (Line2D ray : npc.rays) {
 			g2.draw(ray);
 		}
+		g2.setComposite(oldAlpha);
+
 		
 		g2.setColor(Color.BLACK);
 		g2.draw(npc.ellipse);

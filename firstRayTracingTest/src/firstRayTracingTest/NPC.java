@@ -8,7 +8,7 @@ import java.awt.geom.Rectangle2D;
 
 public class NPC {
 
-	double startAngle, angle, rotateSpeed, angleX, angleY;
+	double startAngle, angle, rotateSpeed, angleX, angleY, speed;
 	int rotateDirection = 1;
 
 	double x, y, cx, cy, w, h;
@@ -41,12 +41,13 @@ public class NPC {
 
 	}
 
-	public NPC(double x, double y, double startAngle, double rotateSpeed, int visionDistance, int visionMultiplier) {
+	public NPC(double x, double y, double startAngle, double rotateSpeed, int visionDistance, int visionMultiplier, double speed) {
 		this.x = x;
 		this.y = y;
 		w = 20;
 		h = 20;
 
+		this.speed = speed;
 		this.rotateSpeed = rotateSpeed;
 		this.startAngle = startAngle;
 		angle = startAngle;
@@ -85,14 +86,31 @@ public class NPC {
 		}
 	}
 
+	public void rotateToPlayer(Player player) {
+		double theta = Math.atan2(player.y - y, player.x - x);
+		angle = startAngle + theta;
+	}
+
+	public void followPlayer(Player player) {
+		if (x < player.x) {
+			x+=speed;
+		}
+		else {
+			x-=speed;	
+		}
+		if (y < player.y) {
+			y+=speed;
+		}
+		else {
+			y-=speed;	
+		}
+	}
+
 	public void setPosition() {	
 		angleX = Math.sin(Math.toRadians(angle));
 		angleY = Math.cos(Math.toRadians(angle));
-		rotate();
 
 		// Set values used in collisions, math, and drawing
-		x = rect.getX();
-		y = rect.getY();
 		cx = rect.getCenterX();
 		cy = rect.getCenterY();
 		halfWidth = rect.getWidth() / 2;
@@ -104,13 +122,16 @@ public class NPC {
 		setRays();
 	}
 
-	public void update() {
+	public void update(Player player) {
 		setPosition();
 		
 		if (seesPlayer) {
 			outlineColor = Color.red;
+			followPlayer(player);
+			//rotateToPlayer(player);
 		} else {
 			outlineColor = Color.DARK_GRAY;
+			rotate();
 		}
 		
 	}
